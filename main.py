@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import ffmpeg
 import click
 
@@ -25,15 +25,16 @@ import click
 
 
 def convert_video(file, format, path_to_save):
-    old_file_path = os.path.splitext(file)[0]
-    new_file_path = old_file_path + f".{format}"
+
+    file_name = Path(file).stem
+    new_file = file_name + f".{format}"
 
     if path_to_save:
-        file_name = os.path.split(new_file_path)[1]
-        print(file_name)
-        new_file_path = os.path.join(path_to_save, file_name)
+        file_name = Path(file).stem
+        new_file_path = Path(path_to_save, file_name).stem
+        new_file = new_file_path + f".{format}"
 
-    ffmpeg.input(file).output(new_file_path).run()
+    ffmpeg.input(file).output(new_file).run()
 
 # def convert_to_mp4(start_dir, file):
 #     name, ext = os.path.splitext(file)
