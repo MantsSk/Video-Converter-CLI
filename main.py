@@ -56,11 +56,22 @@ format_list = [
 @click.argument('file')
 @click.option('--video_format', type=click.Choice(format_list), prompt="Choose to which format to convert video", default=format_list[0], help='Format to convert video to')
 @click.option('--path_to_save', type=click.Path(exists=True), default=None, help='Path to save video to')
-def main(file, video_format, path_to_save):
+def convert(file, video_format, path_to_save):
     convert_video(file, video_format, path_to_save)
 
 
-main()
+@click.command()
+@click.argument('file')
+@click.option('--overlay_image', type=click.Path(exists=True), default=None, help='Image to add onto video')
+def overlay(file, overlay_image):
+    overlay_file = ffmpeg.input(overlay_image)
+    in_file = ffmpeg.input(file)
+    ffmpeg.concat(in_file).overlay(overlay_file).drawbox(
+        4, 4, 4, 4, color='red', thickness=1).output('out.mp4').run()
+
+    # convert()
+overlay()
+
 
 # @click.command()
 # @click.argument('argum')
